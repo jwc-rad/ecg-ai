@@ -9,14 +9,16 @@ conda activate ecgai
 ```
 Install required packages
 ```sh
+git clone https://github.com/jwc-rad/ecg-ai.git
+cd ecg-ai
+pip install -r requirements.txt
+
+cd ..
 git clone https://github.com/jwc-rad/MISLight.git
 cd MISLight
 pip install -e .
 
-cd ..
-git clone https://github.com/jwc-rad/ecg-ai.git
-cd ecg-ai
-pip install -r requirements.txt
+cd ..ecg-ai
 ```
 
 ## Dataset
