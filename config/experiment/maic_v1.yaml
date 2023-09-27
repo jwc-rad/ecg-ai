@@ -1,0 +1,72 @@
+# @package _global_
+defaults:
+  - _self_
+  - override /data: default
+  - override /data/dataset: maic_physio_v1_aug1
+  - override /model:
+    - regression_base
+    - loss_mae
+  - override /networks: efficientnet
+  - override /scheduler: epoch_cosine
+  - override /optimizer: adam
+  - override /callbacks:
+    - learning_rate_monitor
+    - model_checkpoint
+    - save_results
+
+hydra:
+  job:
+    name: ${task_name}
+  output_subdir: config
+  run:
+    dir: runs/${hydra.job.name}/${now:%Y-%m-%d}_${now:%H-%M-%S}
+  sweep:
+    dir: runs/${hydra.job.name}/${now:%Y-%m-%d}_${now:%H-%M-%S}
+    subdir: ${hydra.job.override_dirname}
+
+task_name: ECGAI
+train: True
+valid: True
+test: False
+
+seed:
+  seed: 12345
+  deterministic: true
+
+trainer:
+  #max_steps: 40000
+  #max_steps: 200
+  max_epochs: 40
+  #val_check_interval: 400
+  #check_val_every_n_epoch: 1
+  log_every_n_steps: 10
+  #precision: 32
+  #detect_anomaly: true
+
+optimizer:
+  lr: 0.001
+
+callbacks:   
+  model_checkpoint:
+    every_n_epochs: 1
+    filename: epoch={epoch:05d}_val_MAE={metrics/valid_MAE:.8f}_val_loss={loss/valid:.8f}
+    save_weights_only: True
+    auto_insert_metric_name: False
+    save_top_k: 1
+    monitor: metrics/valid_MAE
+    mode: min
+    save_last: True
+  learning_rate_monitor:
+    logging_interval: step
+
+data:
+  dataloader:
+    num_workers: 4
+    batch_size: 32
+    batch_size_inference: 32
+    persistent_workers: True
+
+model:
+  metrics: 
+    MAE:
+      _target_: monai.metrics.MAEMetric  

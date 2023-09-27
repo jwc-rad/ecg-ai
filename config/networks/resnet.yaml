@@ -1,0 +1,9 @@
+base:
+  spatial_dims: ${data.dataset.spatial_dims}
+  in_channels: ${data.dataset.image_channels}
+
+netA:
+  _target_: networks.resnet.ResNet50
+  spatial_dims: ${..base.spatial_dims}
+  n_input_channels: ${..base.in_channels}
+  num_classes: ${data.dataset.num_classes} 

@@ -1,0 +1,104 @@
+dataset_target: data.dataset.ECG_V0
+spatial_dims: 1
+num_classes: 1
+image_channels: 12
+image_size: 5000
+image_fs: 500
+image_dir: ${paths.data_root_dir}/data/maic_physio/V1/image/train
+label_csv: ${paths.data_root_dir}/data/maic_physio/V1/dataset_train.csv
+label_key: FILENAME
+label_name: AGE
+split_path: ${paths.data_root_dir}/data/maic_physio/V1/merge_split_n5_rs12345.pkl
+cv_fold: 0
+parse_str: ""
+train:
+  _target_: ${..dataset_target}
+  phase: train
+  image_dir: ${..image_dir}
+  label_csv: ${..label_csv}
+  label_key: ${..label_key}
+  label_name: ${..label_name}
+  split_path: ${..split_path}
+  cv_fold: ${..cv_fold}
+  parse_str: ${..parse_str}
+  transform:
+    load_image:
+      _target_: monai.transforms.LoadImaged
+      keys: image
+      image_only: true
+    channel_first:
+      _target_: monai.transforms.EnsureChannelFirstd
+      keys: image
+      channel_dim: 0
+    preprocess:
+      _target_: utils.transforms.TorchECGPreprocessd
+      _convert_: all
+      keys: image
+      sampling_frequency: ${data.dataset.image_fs}
+      bandpass:
+        lowcut: 0.5
+        highcut: 45
+        filter_type: butter
+        filter_order: 4
+      normalize:
+        method: z-score
+
+      
+valid:
+  _target_: ${..dataset_target}
+  phase: valid
+  image_dir: ${..image_dir}
+  label_csv: ${..label_csv}
+  label_key: ${..label_key}
+  label_name: ${..label_name}
+  split_path: ${..split_path}
+  cv_fold: ${..cv_fold}
+  parse_str: ${..parse_str}
+  transform:
+    load_image:
+      _target_: monai.transforms.LoadImaged
+      keys: image
+      image_only: true
+    channel_first:
+      _target_: monai.transforms.EnsureChannelFirstd
+      keys: image
+      channel_dim: 0
+    preprocess:
+      _target_: utils.transforms.TorchECGPreprocessd
+      _convert_: all
+      keys: image
+      sampling_frequency: ${data.dataset.image_fs}
+      bandpass:
+        lowcut: 0.5
+        highcut: 45
+        filter_type: butter
+        filter_order: 4
+      normalize:
+        method: z-score
+
+test:
+  _target_: ${..dataset_target}
+  phase: test
+  image_dir: ${paths.data_root_dir}/data/maic_physio/V1/image/valid
+  parse_str: ${..parse_str}
+  transform:
+    load_image:
+      _target_: monai.transforms.LoadImaged
+      keys: image
+      image_only: true
+    channel_first:
+      _target_: monai.transforms.EnsureChannelFirstd
+      keys: image
+      channel_dim: 0
+    preprocess:
+      _target_: utils.transforms.TorchECGPreprocessd
+      _convert_: all
+      keys: image
+      sampling_frequency: ${data.dataset.image_fs}
+      bandpass:
+        lowcut: 0.5
+        highcut: 45
+        filter_type: butter
+        filter_order: 4
+      normalize:
+        method: z-score

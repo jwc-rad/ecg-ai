@@ -1,0 +1,26 @@
+base:
+  spatial_dims: ${data.dataset.spatial_dims}
+  in_channels: ${data.dataset.image_channels}
+
+netA:
+  _target_: networks.crnn.CRNN_AvgPool
+  cnn_class:
+    _target_: hydra.utils.get_class
+    path: networks.efficientnet.EfficientNetBNFeatures
+  cnn_cfg:  
+    model_name: efficientnet-b0
+    spatial_dims: ${...base.spatial_dims}
+    in_channels: ${...base.in_channels}
+    num_classes: 1
+  rnn_class:
+    _target_: hydra.utils.get_class
+    path: torch.nn.GRU
+  rnn_cfg:
+    input_size: 1280
+    hidden_size: 1280
+    num_layers: 1
+    bidirectional: true
+    dropout: 0
+    batch_first: true
+  clf_input_size: 2560
+  num_classes: ${data.dataset.num_classes}

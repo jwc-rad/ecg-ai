@@ -1,0 +1,17 @@
+base:
+  spatial_dims: ${data.dataset.spatial_dims}
+  in_channels: ${data.dataset.image_channels}
+
+netA:
+  _target_: monai.networks.nets.SEResNeXt50
+  spatial_dims: ${..base.spatial_dims}
+  in_channels: ${..base.in_channels}
+  num_classes: ${data.dataset.num_classes} 
+  pretrained: false
+  progress: false
+  dropout_prob: null
+  layers:
+  - 2
+  - 2
+  - 4
+  - 2

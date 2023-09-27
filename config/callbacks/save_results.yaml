@@ -1,0 +1,7 @@
+save_results:
+  _target_: utils.callbacks.ResultsCallback
+  result_dir: ${paths.output_dir}/results
+  label_key: key
+  label_save_key: FILENAME
+  label_save_name: AGE
+  csv_name: best_valid

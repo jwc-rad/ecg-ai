@@ -1,0 +1,21 @@
+base:
+  spatial_dims: ${data.dataset.spatial_dims}
+  in_channels: ${data.dataset.image_channels}
+
+netA:
+  _target_: monai.networks.nets.SEResNet50
+  spatial_dims: ${..base.spatial_dims}
+  in_channels: ${..base.in_channels}
+  num_classes: ${data.dataset.num_classes} 
+  pretrained: false
+  progress: false
+  groups: 1
+  reduction: 16
+  inplanes: 64
+  downsample_kernel_size: 1
+  dropout_prob: null
+  layers:
+  - 3
+  - 4
+  - 6
+  - 3
