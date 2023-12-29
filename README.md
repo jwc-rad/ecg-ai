@@ -27,6 +27,9 @@ There are some public ECG datasets with the same data format as follows:
 - [A large scale 12-lead electrocardiogram database for arrhythmia study](https://physionet.org/content/ecg-arrhythmia/1.0.0/)
 - [PTB-XL](https://physionet.org/content/ptb-xl/1.0.3/)
 
+## Prepare data
+
+
 ## Train
 ```
 python train.py experiment=maic_v1 paths.data_root_dir=${PATH_TO_DATA_DIRECTORY}
